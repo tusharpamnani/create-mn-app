@@ -10,7 +10,7 @@ Scaffold Midnight Network applications on Preprod.
 ## Quick Start
 
 ```bash
-npx create-mn-app my-app
+npx create-mn-app@latest my-app
 cd my-app
 npm run setup
 ```
@@ -36,8 +36,8 @@ The `setup` command:
 Templates are organized by category. The interactive flow guides you through category → template selection.
 
 ```bash
-npx create-mn-app my-app         # interactive: pick category then template
-npx create-mn-app my-app --list  # list all templates grouped by category
+npx create-mn-app@latest my-app         # interactive: pick category then template
+npx create-mn-app@latest my-app --list  # list all templates grouped by category
 ```
 
 ### Contract
@@ -47,7 +47,7 @@ npx create-mn-app my-app --list  # list all templates grouped by category
 | `hello-world` (default) | Basic message storage contract demonstrating state management |
 
 ```bash
-npx create-mn-app my-app
+npx create-mn-app@latest my-app
 cd my-app
 npm run setup     # starts proof server, compiles, deploys
 npm run cli       # interact with deployed contract
@@ -63,8 +63,8 @@ npm run cli       # interact with deployed contract
 | `midnight-kitties` | NFT-based full stack DApp *(coming soon)* |
 
 ```bash
-npx create-mn-app my-app --template counter
-npx create-mn-app my-app --template bboard
+npx create-mn-app@latest my-app --template counter
+npx create-mn-app@latest my-app --template bboard
 ```
 
 Requires Compact compiler — the CLI will check and offer to install it.
@@ -84,7 +84,7 @@ Integration examples and patterns *(coming soon)*.
 ## CLI Options
 
 ```bash
-npx create-mn-app [project-name] [options]
+npx create-mn-app@latest [project-name] [options]
 ```
 
 | Option                    | Description                                          |
@@ -106,11 +106,11 @@ npx create-mn-app [project-name] [options]
 Use `-y` or set `CI=true` / `GITHUB_ACTIONS=true` to skip all prompts:
 
 ```bash
-npx create-mn-app my-app -y -t counter    # defaults, no prompts
-CI=true npx create-mn-app my-app           # auto-detected in CI
+npx create-mn-app@latest my-app -y -t counter    # defaults, no prompts
+CI=true npx create-mn-app@latest my-app           # auto-detected in CI
 
-npx create-mn-app my-app --dry-run         # preview without writing files
-npx create-mn-app my-app --from user/repo  # clone any GitHub repo
+npx create-mn-app@latest my-app --dry-run         # preview without writing files
+npx create-mn-app@latest my-app --from user/repo  # clone any GitHub repo
 ```
 
 ## Project Structure
