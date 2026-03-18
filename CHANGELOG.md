@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.22] - 2026-03-18
 
 ### Added
 
@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **CLI aesthetics redesign** — clack-inspired gutter bar (`│`), geometric Unicode symbols (`◆ ◇ ● ▲`), note boxes with box-drawing characters, consistent color semantics (green=done, cyan=commands, dim=secondary), branded intro banner
 - **SetupGuide rewritten** — now reads `setupSteps` and `projectStructure` from template definitions (scalable for new templates)
-- **CI updated** — actions/checkout and setup-node upgraded to v4, added npm caching, lint + format steps, Node 23.x matrix
+- **CI updated** — actions/checkout and setup-node upgraded to v4, added npm caching, lint + format steps
+- **Template submission guide** added to CONTRIBUTING.md
 - **Compact compiler version** updated to 0.28.0 for counter and bboard templates
 - README updated with new CLI flags, template categories, and CI/non-interactive documentation
 
@@ -334,7 +335,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Project setup and configuration
 
-[Unreleased]: https://github.com/midnightntwrk/create-mn-app/compare/v0.3.19...HEAD
+[0.3.22]: https://github.com/midnightntwrk/create-mn-app/compare/v0.3.19...v0.3.22
 [0.3.19]: https://github.com/midnightntwrk/create-mn-app/compare/v0.3.18...v0.3.19
 [0.3.18]: https://github.com/midnightntwrk/create-mn-app/compare/v0.3.17...v0.3.18
 [0.3.17]: https://github.com/midnightntwrk/create-mn-app/compare/v0.3.16...v0.3.17

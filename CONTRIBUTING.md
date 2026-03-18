@@ -13,6 +13,7 @@ Thank you for your interest in contributing to create-mn-app! We welcome contrib
 - [Coding Standards](#coding-standards)
 - [License Headers](#license-headers)
 - [Commit Messages](#commit-messages)
+- [Submitting a Contract or DApp Template](#submitting-a-contract-or-dapp-template)
 - [Code Review Process](#code-review-process)
 - [Community](#community)
 
