@@ -55,7 +55,7 @@ The CLA ensures that:
 3. **Add the upstream remote:**
 
    ```bash
-   git remote add upstream https://github.com/Olanetsoft/create-mn-app.git
+   git remote add upstream https://github.com/midnightntwrk/create-mn-app.git
    ```
 
 4. **Install dependencies:**
@@ -270,6 +270,88 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 feat(templates): add new DeFi template
 fix(installer): resolve npm installation timeout
 docs(readme): update prerequisites section
+```
+
+## Submitting a Contract or DApp Template
+
+Want to add a new template to create-mn-app? Follow these steps:
+
+### Template Requirements
+
+- **Public GitHub repo** under `midnightntwrk` org (or your own org with permission)
+- **Working build** — the project must compile and run on Preprod
+- **README.md** — clear setup and usage instructions
+- **Node.js 22+** compatible
+- **Compact compiler** version 0.28.0+ (for contract/dapp templates)
+
+### Template Categories
+
+| Category | Use case | Examples |
+| --- | --- | --- |
+| `contract` | Deploy and test a contract (no UI) | `hello-world` |
+| `dapp` | Full app with UI and/or CLI | `counter`, `bboard` |
+| `connector` | Integration patterns and examples | *(coming soon)* |
+
+### How to Submit
+
+1. **Prepare your repo** — ensure it builds cleanly with `npm install && npm run build`
+
+2. **Register the template** in `src/utils/templates.ts`:
+
+   ```typescript
+   {
+     name: "your-template",
+     display: "Your Template",
+     description: "One-line description of what it does",
+     available: true,
+     type: "remote",
+     category: "dapp",          // or "contract" / "connector"
+     repo: "midnightntwrk/example-your-template",
+     nodeVersion: 22,
+     requiresCompactCompiler: true,
+     compactVersion: "0.28.0",
+     projectStructure: [
+       "contract/     smart contract (compact)",
+       "your-cli/     cli interface",
+     ],
+     setupSteps: [
+       {
+         title: "Build",
+         commands: [
+           "cd {{projectName}}",
+           "{{installCmd}}",
+           "cd contract && {{runCmd}} build",
+         ],
+       },
+       {
+         title: "Proof Server",
+         commands: [
+           "docker run -d -p 6300:6300 -e PORT=6300 midnightntwrk/proof-server:7.0.0",
+         ],
+       },
+       {
+         title: "Run",
+         commands: ["{{runCmd}} start"],
+       },
+     ],
+   }
+   ```
+
+   Use `{{projectName}}`, `{{installCmd}}`, and `{{runCmd}}` placeholders — they resolve to the user's chosen package manager automatically.
+
+3. **Update docs** — add your template to the README table under the appropriate category
+
+4. **Submit a PR** with:
+   - The template registration in `templates.ts`
+   - README update
+   - A brief description of the template and a link to the source repo
+
+### Testing Your Template
+
+```bash
+npm run build
+node dist/cli.js my-app -t your-template    # test the clone + setup flow
+node dist/cli.js my-app -t your-template --dry-run  # verify dry-run output
 ```
 
 ## Code Review Process
