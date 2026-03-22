@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 import fs from "fs-extra";
 import path from "path";
 import { debug } from "./debug.js";
@@ -28,19 +28,10 @@ export class GitCloner {
     branch: string = "main",
     retries: number = 3,
   ): Promise<void> {
-    // Sanitize inputs to prevent command injection
-    if (!/^[a-zA-Z0-9_.\-\/]+$/.test(repo)) {
-      throw new Error(`Invalid repository name: ${repo}`);
-    }
-    if (!/^[a-zA-Z0-9_.\-]+$/.test(branch)) {
-      throw new Error(`Invalid branch name: ${branch}`);
-    }
-
     const repoUrl = `https://github.com/${repo}.git`;
 
-    try {
-      execSync("git --version", { stdio: "ignore" });
-    } catch {
+    const gitCheck = spawnSync("git", ["--version"], { stdio: "ignore" });
+    if (gitCheck.status !== 0) {
       throw new Error(
         "Git is not installed. Please install Git from https://git-scm.com",
       );
@@ -55,10 +46,15 @@ export class GitCloner {
           await fs.remove(targetPath);
         }
 
-        execSync(
-          `git clone --depth 1 --branch "${branch}" "${repoUrl}" "${targetPath}"`,
+        const result = spawnSync(
+          "git",
+          ["clone", "--depth", "1", "--branch", branch, repoUrl, targetPath],
           { stdio: "pipe" },
         );
+        if (result.status !== 0) {
+          const stderr = result.stderr?.toString() || "Unknown error";
+          throw new Error(`git clone failed: ${stderr}`);
+        }
 
         // Remove .git directory to make it a fresh project
         const gitDir = path.join(targetPath, ".git");
@@ -90,11 +86,7 @@ export class GitCloner {
    * Check if git is available
    */
   static isGitAvailable(): boolean {
-    try {
-      execSync("git --version", { stdio: "ignore" });
-      return true;
-    } catch {
-      return false;
-    }
+    const result = spawnSync("git", ["--version"], { stdio: "ignore" });
+    return result.status === 0;
   }
 }

@@ -45,6 +45,46 @@ import {
   type TemplateCategory,
 } from "./utils/templates.js";
 import { CompactUpdater } from "./utils/compact-updater.js";
+import os from "os";
+
+/**
+ * Guard against accidentally removing dangerous paths like /, ~, or
+ * system directories.  Throws if the resolved path looks destructive.
+ */
+function assertSafeProjectPath(projectPath: string): void {
+  const resolved = path.resolve(projectPath);
+  const homeDir = os.homedir();
+
+  const dangerous = [
+    "/",
+    "/usr",
+    "/etc",
+    "/var",
+    "/tmp",
+    "/home",
+    "/opt",
+    homeDir,
+    path.join(homeDir, "Desktop"),
+    path.join(homeDir, "Documents"),
+    path.join(homeDir, "Downloads"),
+  ];
+
+  if (dangerous.includes(resolved)) {
+    throw new Error(
+      `Refusing to operate on "${resolved}" — ` +
+        "this path is a system or home directory.",
+    );
+  }
+
+  // Reject paths that resolve outside cwd's parent tree (e.g. /etc/passwd)
+  // while still allowing sibling dirs (normal usage).
+  if (resolved.split(path.sep).length <= 2) {
+    throw new Error(
+      `Refusing to operate on "${resolved}" — ` +
+        "path is too close to the filesystem root.",
+    );
+  }
+}
 
 function cancelAndExit(): never {
   console.log(chalk.yellow("\n✖ Operation cancelled."));
@@ -325,6 +365,7 @@ export async function createApp(
 
   const projectPath = path.resolve(projectName!);
   debug("Project path resolved:", projectPath);
+  assertSafeProjectPath(projectPath);
 
   // Check if directory exists
   if (fs.existsSync(projectPath)) {
@@ -549,6 +590,7 @@ async function createFromCustomRepo(
   options: CreateAppOptions,
 ): Promise<void> {
   const projectPath = path.resolve(projectName);
+  assertSafeProjectPath(projectPath);
 
   // Check if directory already exists
   if (fs.existsSync(projectPath)) {

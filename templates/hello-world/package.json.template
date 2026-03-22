@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A Midnight Network application created with create-mn-app",
-  "author": "{{author}}",
+  "author": "",
   "license": "MIT",
   "scripts": {
     "compile": "compact compile contracts/hello-world.compact contracts/managed/hello-world",

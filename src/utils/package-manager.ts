@@ -15,7 +15,7 @@
 
 import fs from "fs-extra";
 import path from "path";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 
 export type PackageManager = "npm" | "yarn" | "pnpm" | "bun";
 
@@ -90,20 +90,15 @@ export function detectPackageManager(
   if (userAgent.includes("npm")) return "npm";
 
   // Check if package managers are available
-  try {
-    execSync("pnpm --version", { stdio: "ignore" });
+  if (spawnSync("pnpm", ["--version"], { stdio: "ignore" }).status === 0) {
     return "pnpm";
-  } catch {}
-
-  try {
-    execSync("yarn --version", { stdio: "ignore" });
+  }
+  if (spawnSync("yarn", ["--version"], { stdio: "ignore" }).status === 0) {
     return "yarn";
-  } catch {}
-
-  try {
-    execSync("bun --version", { stdio: "ignore" });
+  }
+  if (spawnSync("bun", ["--version"], { stdio: "ignore" }).status === 0) {
     return "bun";
-  } catch {}
+  }
 
   // Default to npm (always available with Node.js)
   return "npm";
@@ -120,10 +115,5 @@ export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo {
  * Check if a package manager is available
  */
 export function isPackageManagerAvailable(pm: PackageManager): boolean {
-  try {
-    execSync(`${pm} --version`, { stdio: "ignore" });
-    return true;
-  } catch {
-    return false;
-  }
+  return spawnSync(pm, ["--version"], { stdio: "ignore" }).status === 0;
 }

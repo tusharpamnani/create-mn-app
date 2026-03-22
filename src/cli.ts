@@ -33,9 +33,6 @@ updateNotifier({ pkg, updateCheckInterval: 1000 * 60 * 60 * 24 }).notify({
 
 const program = new Command();
 
-// Check Node.js version before anything else (require 22+)
-ErrorHandler.checkNodeVersion(22);
-
 program
   .name("create-mn-app")
   .description("Create a new Midnight Network application")
