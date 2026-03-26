@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.26] - 2026-03-24
+
+### Changed
+
+- **Standardize child process calls** — `git-cloner` and `package-manager` now use `spawnSync` with argument arrays instead of shell string interpolation
+- **Compact installer** — downloads installer script to a temp file with shebang validation before executing, instead of piping `curl` directly to `sh`
+- **Path safety guard** — rejects dangerous project paths (`/`, `~`, system dirs) before any `fs.remove` call
+- **Remove dead code** — `ErrorHandler.checkDocker`, `checkNodeVersion`, `warn`, `info`, and `PackageInstaller.detectPackageManager` removed (zero callers)
+- **Fix `{{author}}` template variable** — was never provided to Mustache, now explicitly set to `""`
+- **Exclude `test.ts` from build** — smoke test no longer ships in npm package
+
 ## [0.3.25] - 2026-03-24
 
 ### Fixed
