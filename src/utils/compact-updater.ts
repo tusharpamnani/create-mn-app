@@ -13,10 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { execSync, spawn } from "child_process";
+import { execSync, spawn, spawnSync } from "child_process";
 import chalk from "chalk";
 import ora from "ora";
 import prompts from "prompts";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 export class CompactUpdater {
   /**
@@ -85,6 +88,49 @@ export class CompactUpdater {
     return response.shouldUpdate;
   }
 
+  private static readonly INSTALLER_URL =
+    "https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh";
+
+  /**
+   * Download the installer script to a temp file instead of
+   * piping curl output directly to a shell.
+   */
+  private static downloadInstaller(): string | null {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "compact-"));
+    const scriptPath = path.join(tmpDir, "compact-installer.sh");
+
+    const result = spawnSync(
+      "curl",
+      [
+        "--proto",
+        "=https",
+        "--tlsv1.2",
+        "-LSsf",
+        "--max-time",
+        "60",
+        "-o",
+        scriptPath,
+        this.INSTALLER_URL,
+      ],
+      { stdio: "pipe" },
+    );
+
+    if (result.status !== 0 || !fs.existsSync(scriptPath)) {
+      return null;
+    }
+
+    // Sanity-check: the file must start with a shebang or be a
+    // recognisable shell script — reject HTML error pages, etc.
+    const head = fs.readFileSync(scriptPath, "utf-8").slice(0, 64);
+    if (!head.startsWith("#!") && !head.startsWith("#!/")) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+      return null;
+    }
+
+    fs.chmodSync(scriptPath, 0o755);
+    return scriptPath;
+  }
+
   /**
    * Update Compact compiler to the latest version
    */
@@ -94,11 +140,14 @@ export class CompactUpdater {
       color: "cyan",
     }).start();
 
-    return new Promise((resolve) => {
-      const installScript =
-        "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh";
+    const scriptPath = this.downloadInstaller();
+    if (!scriptPath) {
+      spinner.fail("Failed to download Compact installer");
+      return false;
+    }
 
-      const updateProcess = spawn("sh", ["-c", installScript], {
+    return new Promise((resolve) => {
+      const updateProcess = spawn(scriptPath, [], {
         stdio: ["inherit", "pipe", "pipe"],
       });
 
@@ -124,8 +173,17 @@ export class CompactUpdater {
       });
 
       updateProcess.on("close", (code) => {
+        // Clean up temp file
+        try {
+          fs.rmSync(path.dirname(scriptPath), {
+            recursive: true,
+            force: true,
+          });
+        } catch {
+          // best-effort cleanup
+        }
+
         if (code === 0 && !hasError) {
-          // Verify the new version
           const newVersion = this.getCurrentVersion();
           if (newVersion) {
             spinner.succeed(
@@ -175,7 +233,7 @@ export class CompactUpdater {
       );
       console.log(
         chalk.gray(
-          `   curl --proto '=https' --tlsv1.2 -LsSf https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh\n`,
+          `   Visit https://github.com/midnightntwrk/compact/releases for installation instructions.\n`,
         ),
       );
       return false;

@@ -70,14 +70,4 @@ export class PackageInstaller {
       child.on("error", reject);
     });
   }
-
-  static detectPackageManager(): "npm" | "yarn" | "pnpm" {
-    if (process.env.npm_config_user_agent?.includes("yarn")) {
-      return "yarn";
-    }
-    if (process.env.npm_config_user_agent?.includes("pnpm")) {
-      return "pnpm";
-    }
-    return "npm";
-  }
 }
