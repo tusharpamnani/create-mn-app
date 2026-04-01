@@ -16,20 +16,12 @@ A Midnight Network application created with `create-mn-app`.
    npm install
    ```
 
-2. **Set encryption password**:
-   The Midnight SDK uses encrypted local storage for contract state. You must set this environment variable before running scripts:
-   ```bash
-   export PRIVATE_STATE_PASSWORD='YourStrongPassword'
-   ```
-
-3. **Setup and deploy**:
-
+2. **Setup and deploy**:
    ```bash
    npm run setup
    ```
 
    This will:
-
    - Compile your Compact contract
    - Deploy contract to Preprod
 

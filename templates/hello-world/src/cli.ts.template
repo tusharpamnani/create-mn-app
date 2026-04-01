@@ -100,14 +100,7 @@ async function createWallet(seed: string) {
 }
 
 async function createProviders(walletCtx: ReturnType<typeof createWallet> extends Promise<infer T> ? T : never) {
-  const privateStatePassword = process.env.PRIVATE_STATE_PASSWORD?.trim();
-  if (!privateStatePassword) {
-    throw new Error(
-      'Missing PRIVATE_STATE_PASSWORD environment variable.\n' +
-      'The encrypted private state provider requires a local encryption password.\n' +
-      'Set it with: export PRIVATE_STATE_PASSWORD=\'your-password\''
-    );
-  }
+  const privateStatePassword = process.env.PRIVATE_STATE_PASSWORD?.trim() || 'development';
 
   const state = await walletCtx.wallet.waitForSyncedState();
 
