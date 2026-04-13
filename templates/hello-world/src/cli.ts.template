@@ -178,7 +178,7 @@ async function main() {
     const providers = await createProviders(walletCtx);
 
     const deployed: any = await findDeployedContract(providers, {
-      compiledContract,
+      compiledContract: compiledContract as any,
       contractAddress: deployment.contractAddress,
     });
 
