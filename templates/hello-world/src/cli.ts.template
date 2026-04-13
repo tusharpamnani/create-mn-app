@@ -177,10 +177,10 @@ async function main() {
     console.log('  Connecting to contract...');
     const providers = await createProviders(walletCtx);
 
-    const deployed: any = await findDeployedContract(providers, {
-      compiledContract,
-      contractAddress: deployment.contractAddress,
-    });
+const deployed: any = await findDeployedContract(providers, {
+  compiledContract: compiledContract as any,
+  contractAddress: deployment.contractAddress,
+});
 
     console.log('  ✅ Connected!\n');
 
