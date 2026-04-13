@@ -345,9 +345,9 @@ async function main() {
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
         deployed = await deployContract(providers, {
-          compiledContract,
+          compiledContract: compiledContract as any,
           args: [],
-        });
+      });
         break; // Success - exit retry loop
       } catch (err: any) {
         const errMsg = err?.message || err?.toString() || '';
